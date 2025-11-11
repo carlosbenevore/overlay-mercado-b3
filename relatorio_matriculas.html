@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Matrículas - Eu me Banco/FBNF</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .charts-section {
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .curso-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .cea { background: #667eea; color: white; }
+        .cfp { background: #f093fb; color: white; }
+        .cpa10 { background: #4facfe; color: white; }
+        .cpa20 { background: #43e97b; color: white; }
+        .pqo { background: #fa709a; color: white; }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .stat-card:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Relatório de Matrículas</h1>
+            <p>Eu me Banco / FBNF - Fevereiro a Novembro 2025</p>
+        </div>
+
+        <div class="content">
+            <!-- Cards de Estatísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total de Alunos</h3>
+                    <div class="value">80.832</div>
+                    <div class="label">Matriculados no período</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Cursos Ativos</h3>
+                    <div class="value">5</div>
+                    <div class="label">CEA, CFP, CPA 10, CPA 20, PQO</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Maior Mês</h3>
+                    <div class="value">Março</div>
+                    <div class="label">26.951 matrículas</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Curso Líder</h3>
+                    <div class="value">CPA 20</div>
+                    <div class="label">30.336 alunos (37.5%)</div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h2>📈 Evolução de Matrículas por Curso</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h2>📊 Distribuição Total por Curso</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h2>📉 Comparativo Mensal por Curso</h2>
+                    <div class="chart-wrapper">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de Totais Mensais -->
+            <h2 style="margin-bottom: 20px; color: #333;">📊 Totais Mensais Consolidados</h2>
+            <table style="margin-bottom: 40px;">
+                <thead>
+                    <tr>
+                        <th>Mês</th>
+                        <th style="text-align: right;">CEA</th>
+                        <th style="text-align: right;">CFP</th>
+                        <th style="text-align: right;">CPA 10</th>
+                        <th style="text-align: right;">CPA 20</th>
+                        <th style="text-align: right;">PQO</th>
+                        <th style="text-align: right; background: #FF6B6B; color: white;">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody id="tableTotais">
+                </tbody>
+            </table>
+
+            <!-- Tabela Detalhada Transposta -->
+            <h2 style="margin-bottom: 20px; color: #333;">📋 Dados Detalhados por Curso e Mês</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="min-width: 120px;">Curso</th>
+                            <th style="text-align: right; min-width: 90px;">Fev</th>
+                            <th style="text-align: right; min-width: 90px;">Mar</th>
+                            <th style="text-align: right; min-width: 90px;">Abr</th>
+                            <th style="text-align: right; min-width: 90px;">Mai</th>
+                            <th style="text-align: right; min-width: 90px;">Jun</th>
+                            <th style="text-align: right; min-width: 90px;">Jul</th>
+                            <th style="text-align: right; min-width: 90px;">Ago</th>
+                            <th style="text-align: right; min-width: 90px;">Set</th>
+                            <th style="text-align: right; min-width: 90px;">Out</th>
+                            <th style="text-align: right; min-width: 90px;">Nov</th>
+                            <th style="text-align: right; background: #667eea; color: white; min-width: 100px;">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Eu me Banco / FBNF</strong> - Escola de Negócios do Mercado Financeiro</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Relatório gerado em: <span id="currentDate"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Dados
+        const data = [
+            { mes: "2025-02", curso: "CEA", total: 5795 },
+            { mes: "2025-02", curso: "CFP", total: 1176 },
+            { mes: "2025-02", curso: "CPA 10", total: 3912 },
+            { mes: "2025-02", curso: "CPA 20", total: 8063 },
+            { mes: "2025-03", curso: "CEA", total: 6999 },
+            { mes: "2025-03", curso: "CFP", total: 6939 },
+            { mes: "2025-03", curso: "CPA 10", total: 4189 },
+            { mes: "2025-03", curso: "CPA 20", total: 8554 },
+            { mes: "2025-03", curso: "PQO", total: 270 },
+            { mes: "2025-04", curso: "CEA", total: 2017 },
+            { mes: "2025-04", curso: "CFP", total: 593 },
+            { mes: "2025-04", curso: "CPA 10", total: 1909 },
+            { mes: "2025-04", curso: "CPA 20", total: 3172 },
+            { mes: "2025-04", curso: "PQO", total: 239 },
+            { mes: "2025-05", curso: "CEA", total: 1772 },
+            { mes: "2025-05", curso: "CFP", total: 228 },
+            { mes: "2025-05", curso: "CPA 10", total: 572 },
+            { mes: "2025-05", curso: "CPA 20", total: 1454 },
+            { mes: "2025-05", curso: "PQO", total: 185 },
+            { mes: "2025-06", curso: "CEA", total: 1160 },
+            { mes: "2025-06", curso: "CFP", total: 229 },
+            { mes: "2025-06", curso: "CPA 10", total: 476 },
+            { mes: "2025-06", curso: "CPA 20", total: 1000 },
+            { mes: "2025-06", curso: "PQO", total: 124 },
+            { mes: "2025-07", curso: "CEA", total: 1858 },
+            { mes: "2025-07", curso: "CFP", total: 545 },
+            { mes: "2025-07", curso: "CPA 10", total: 788 },
+            { mes: "2025-07", curso: "CPA 20", total: 1766 },
+            { mes: "2025-07", curso: "PQO", total: 201 },
+            { mes: "2025-08", curso: "CEA", total: 1503 },
+            { mes: "2025-08", curso: "CFP", total: 361 },
+            { mes: "2025-08", curso: "CPA 10", total: 734 },
+            { mes: "2025-08", curso: "CPA 20", total: 2184 },
+            { mes: "2025-08", curso: "PQO", total: 171 },
+            { mes: "2025-09", curso: "CEA", total: 1503 },
+            { mes: "2025-09", curso: "CFP", total: 95 },
+            { mes: "2025-09", curso: "CPA 10", total: 757 },
+            { mes: "2025-09", curso: "CPA 20", total: 2457 },
+            { mes: "2025-09", curso: "PQO", total: 125 },
+            { mes: "2025-10", curso: "CEA", total: 987 },
+            { mes: "2025-10", curso: "CFP", total: 23 },
+            { mes: "2025-10", curso: "CPA 10", total: 532 },
+            { mes: "2025-10", curso: "CPA 20", total: 1626 },
+            { mes: "2025-10", curso: "PQO", total: 111 },
+            { mes: "2025-11", curso: "CEA", total: 61 },
+            { mes: "2025-11", curso: "CPA 10", total: 19 },
+            { mes: "2025-11", curso: "CPA 20", total: 60 },
+            { mes: "2025-11", curso: "PQO", total: 5 }
+        ];
+
+        const mesesNomes = {
+            "2025-02": "Fevereiro",
+            "2025-03": "Março",
+            "2025-04": "Abril",
+            "2025-05": "Maio",
+            "2025-06": "Junho",
+            "2025-07": "Julho",
+            "2025-08": "Agosto",
+            "2025-09": "Setembro",
+            "2025-10": "Outubro",
+            "2025-11": "Novembro"
+        };
+
+        const cursoColors = {
+            "CEA": "#667eea",
+            "CFP": "#f093fb",
+            "CPA 10": "#4facfe",
+            "CPA 20": "#43e97b",
+            "PQO": "#fa709a"
+        };
+
+        const cursoClasses = {
+            "CEA": "cea",
+            "CFP": "cfp",
+            "CPA 10": "cpa10",
+            "CPA 20": "cpa20",
+            "PQO": "pqo"
+        };
+
+        // Preparar dados para gráficos
+        const meses = [...new Set(data.map(d => d.mes))];
+        const cursos = ["CEA", "CFP", "CPA 10", "CPA 20", "PQO"];
+
+        // Dados por curso ao longo do tempo
+        const datasets = cursos.map(curso => {
+            return {
+                label: curso,
+                data: meses.map(mes => {
+                    const item = data.find(d => d.mes === mes && d.curso === curso);
+                    return item ? item.total : 0;
+                }),
+                borderColor: cursoColors[curso],
+                backgroundColor: cursoColors[curso] + '20',
+                borderWidth: 3,
+                fill: false,
+                tension: 0.4
+            };
+        });
+
+        // Gráfico de Linha
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: meses.map(m => mesesNomes[m]),
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { size: 14 }, padding: 15 }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { font: { size: 12 } }
+                    },
+                    x: {
+                        ticks: { font: { size: 12 } }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Pizza - Total por Curso
+        const totalPorCurso = {};
+        data.forEach(d => {
+            if (!totalPorCurso[d.curso]) totalPorCurso[d.curso] = 0;
+            totalPorCurso[d.curso] += d.total;
+        });
+
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(totalPorCurso),
+                datasets: [{
+                    data: Object.values(totalPorCurso),
+                    backgroundColor: Object.keys(totalPorCurso).map(c => cursoColors[c]),
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { font: { size: 14 }, padding: 15 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value.toLocaleString('pt-BR')} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Barras com Total
+        const totalPorMes = meses.map(mes => {
+            return data.filter(d => d.mes === mes).reduce((sum, d) => sum + d.total, 0);
+        });
+
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: meses.map(m => mesesNomes[m]),
+                datasets: [
+                    ...datasets.map(ds => ({
+                        ...ds,
+                        backgroundColor: ds.borderColor,
+                        borderWidth: 0,
+                        type: 'bar'
+                    })),
+                    {
+                        label: 'TOTAL MENSAL',
+                        data: totalPorMes,
+                        type: 'line',
+                        borderColor: '#FF6B6B',
+                        backgroundColor: '#FF6B6B',
+                        borderWidth: 4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#FF6B6B',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y1',
+                        order: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { size: 14 }, padding: 15 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y.toLocaleString('pt-BR');
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: false,
+                        ticks: { font: { size: 12 } }
+                    },
+                    y: {
+                        stacked: false,
+                        beginAtZero: true,
+                        position: 'left',
+                        ticks: { font: { size: 12 } },
+                        title: {
+                            display: true,
+                            text: 'Alunos por Curso',
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        ticks: { 
+                            font: { size: 12 },
+                            color: '#FF6B6B'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Total Mensal',
+                            font: { size: 12, weight: 'bold' },
+                            color: '#FF6B6B'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Preencher Tabela de Totais Mensais
+        const tableTotais = document.getElementById('tableTotais');
+        meses.forEach(mes => {
+            const tr = document.createElement('tr');
+            let totalMes = 0;
+            let rowHTML = `<td><strong>${mesesNomes[mes]}</strong></td>`;
+            
+            cursos.forEach(curso => {
+                const item = data.find(d => d.mes === mes && d.curso === curso);
+                const valor = item ? item.total : 0;
+                totalMes += valor;
+                rowHTML += `<td style="text-align: right;">${valor > 0 ? valor.toLocaleString('pt-BR') : '-'}</td>`;
+            });
+            
+            rowHTML += `<td style="text-align: right; background: #ffe0e0; font-weight: bold; color: #FF6B6B;"><strong>${totalMes.toLocaleString('pt-BR')}</strong></td>`;
+            tr.innerHTML = rowHTML;
+            tableTotais.appendChild(tr);
+        });
+
+        // Adicionar linha de TOTAL GERAL
+        const trTotal = document.createElement('tr');
+        trTotal.style.borderTop = '3px solid #667eea';
+        trTotal.style.background = '#f0f0f0';
+        trTotal.style.fontWeight = 'bold';
+        let htmlTotal = '<td><strong>TOTAL GERAL</strong></td>';
+        let granTotal = 0;
+        
+        cursos.forEach(curso => {
+            const totalCurso = data.filter(d => d.curso === curso).reduce((sum, d) => sum + d.total, 0);
+            granTotal += totalCurso;
+            htmlTotal += `<td style="text-align: right;"><strong>${totalCurso.toLocaleString('pt-BR')}</strong></td>`;
+        });
+        
+        htmlTotal += `<td style="text-align: right; background: #FF6B6B; color: white; font-size: 1.1em;"><strong>${granTotal.toLocaleString('pt-BR')}</strong></td>`;
+        trTotal.innerHTML = htmlTotal;
+        tableTotais.appendChild(trTotal);
+
+        // Preencher Tabela Detalhada Transposta
+        const tableBody = document.getElementById('tableBody');
+        
+        cursos.forEach(curso => {
+            const tr = document.createElement('tr');
+            let totalCurso = 0;
+            let rowHTML = `<td><span class="curso-badge ${cursoClasses[curso]}">${curso}</span></td>`;
+            
+            meses.forEach(mes => {
+                const item = data.find(d => d.mes === mes && d.curso === curso);
+                const valor = item ? item.total : 0;
+                totalCurso += valor;
+                rowHTML += `<td style="text-align: right;">${valor > 0 ? valor.toLocaleString('pt-BR') : '-'}</td>`;
+            });
+            
+            rowHTML += `<td style="text-align: right; background: #f0f0f0; font-weight: bold;"><strong>${totalCurso.toLocaleString('pt-BR')}</strong></td>`;
+            tr.innerHTML = rowHTML;
+            tableBody.appendChild(tr);
+        });
+        
+        // Adicionar linha de TOTAL por mês
+        const trTotalMes = document.createElement('tr');
+        trTotalMes.style.borderTop = '3px solid #667eea';
+        trTotalMes.style.background = '#f8f9fa';
+        trTotalMes.style.fontWeight = 'bold';
+        let htmlTotalMes = '<td><strong>TOTAL DO MÊS</strong></td>';
+        let totalGeral = 0;
+        
+        meses.forEach(mes => {
+            const totalMes = data.filter(d => d.mes === mes).reduce((sum, d) => sum + d.total, 0);
+            totalGeral += totalMes;
+            htmlTotalMes += `<td style="text-align: right; font-weight: bold; color: #667eea;"><strong>${totalMes.toLocaleString('pt-BR')}</strong></td>`;
+        });
+        
+        htmlTotalMes += `<td style="text-align: right; background: #667eea; color: white; font-size: 1.1em;"><strong>${totalGeral.toLocaleString('pt-BR')}</strong></td>`;
+        trTotalMes.innerHTML = htmlTotalMes;
+        tableBody.appendChild(trTotalMes);
+
+        // Data atual
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+    </script>
+</body>
+</html>
